@@ -101,10 +101,12 @@ form.addEventListener('submit', async event => {
     if (!response.ok) throw new Error(data.error || 'Analysis failed.');
     document.querySelector('#detected').textContent = data.cells_detected;
     document.querySelector('#abnormal').textContent = data.abnormal_cells;
+    const counts = { AWBC: 0, ARBC: 0, APLAT: 0, WBC: 0, RBC: 0, PLAT: 0 };
+    for (const detection of data.detections || []) {
+      if (Object.hasOwn(counts, detection.label)) counts[detection.label] += 1;
+    }
+    for (const label of Object.keys(counts)) document.querySelector(`#count-${label.toLowerCase()}`).textContent = counts[label];
     document.querySelector('#annotated').src = `${data.annotated_url}?t=${Date.now()}`;
-    const reconstruction = document.querySelector('#reconstruction-figure');
-    reconstruction.hidden = !data.reconstruction_url;
-    if (data.reconstruction_url) document.querySelector('#reconstruction').src = `${data.reconstruction_url}?t=${Date.now()}`;
     hasResults = true;
     history.pushState({ view: 'results' }, '', '#results');
     showResultsPage();
