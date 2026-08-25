@@ -25,6 +25,10 @@ function showResultsPage() {
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
+function displayImageUrl(url) {
+  return url.startsWith('data:') ? url : `${url}?t=${Date.now()}`;
+}
+
 function resetUpload() {
   form.reset();
   input.value = '';
@@ -106,7 +110,7 @@ form.addEventListener('submit', async event => {
       if (Object.hasOwn(counts, detection.label)) counts[detection.label] += 1;
     }
     for (const label of Object.keys(counts)) document.querySelector(`#count-${label.toLowerCase()}`).textContent = counts[label];
-    document.querySelector('#annotated').src = `${data.annotated_url}?t=${Date.now()}`;
+    document.querySelector('#annotated').src = displayImageUrl(data.annotated_url);
     hasResults = true;
     history.pushState({ view: 'results' }, '', '#results');
     showResultsPage();
