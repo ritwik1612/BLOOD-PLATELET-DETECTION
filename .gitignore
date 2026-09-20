@@ -1,0 +1,8 @@
+# Release repository only
+*.exe
+*.zip
+*.7z
+*.pt
+*.onnx
+*.pth
+__pycache__/
