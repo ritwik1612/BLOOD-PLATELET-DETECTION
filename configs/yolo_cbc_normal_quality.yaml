@@ -1,0 +1,15 @@
+# Separate detector experiment trained only with normal images plus normal capture-quality variants.
+model: outputs/weights/yolov8n_cbc_normal_best.pt
+epochs: 60
+batch: 16
+imgsz: 640
+lr0: 0.0005
+optimizer: AdamW
+weight_decay: 0.0005
+workers: 2
+patience: 18
+seed: 42
+device: 0
+project: outputs/yolo
+name: cbc_normal_quality_yolov8n
+best_weights: outputs/weights/yolov8n_cbc_normal_quality_best.pt

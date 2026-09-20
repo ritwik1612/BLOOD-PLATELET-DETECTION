@@ -1,8 +1,18 @@
-# Release repository only
-*.exe
-*.zip
-*.7z
-*.pt
-*.onnx
-*.pth
 __pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+build/
+build_*/
+dist/
+dist_*/
+installer/release/
+web_app/static/uploads/
+web_app/static/results/
+outputs/predictions/
+outputs/plots/
+outputs/logs/
+outputs/reconstructions/
+outputs/metrics/
+.DS_Store
+Thumbs.db

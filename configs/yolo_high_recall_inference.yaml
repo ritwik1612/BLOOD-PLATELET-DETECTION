@@ -1,0 +1,10 @@
+# Candidate-only inference settings for the 1024px YOLOv8s detector.
+imgsz: 1024
+confidence: 0.10
+iou: 0.80
+inference:
+  enabled: true
+  tile_size: 1024
+  tile_overlap: 0.35
+  tile_min_dimension: 1024
+  max_det: 1000

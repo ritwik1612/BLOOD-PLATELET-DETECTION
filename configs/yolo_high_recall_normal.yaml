@@ -1,0 +1,29 @@
+# Isolated high-resolution experiment. It does not replace the live detector.
+model: outputs/pretrained/yolov8s.pt
+epochs: 150
+batch: 4
+imgsz: 1024
+lr0: 0.0005
+optimizer: AdamW
+weight_decay: 0.0005
+workers: 2
+patience: 35
+seed: 42
+device: 0
+project: outputs/yolo
+name: high_recall_normal_yolov8s_1024
+best_weights: outputs/weights/yolov8s_high_recall_normal_best.pt
+augmentation:
+  degrees: 8.0
+  translate: 0.08
+  scale: 0.25
+  shear: 2.0
+  perspective: 0.0002
+  flipud: 0.5
+  fliplr: 0.5
+  mosaic: 0.5
+  mixup: 0.05
+  close_mosaic: 15
+  hsv_h: 0.01
+  hsv_s: 0.20
+  hsv_v: 0.15

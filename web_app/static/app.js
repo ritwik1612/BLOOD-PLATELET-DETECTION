@@ -1,0 +1,184 @@
+const form = document.querySelector('#predict-form');
+const input = document.querySelector('#image');
+const zone = document.querySelector('#drop-zone');
+const message = document.querySelector('#message');
+const submit = document.querySelector('#submit');
+const filename = document.querySelector('#filename');
+const preview = document.querySelector('#preview');
+const previewWrap = document.querySelector('#preview-wrap');
+const dropEmpty = document.querySelector('#drop-empty');
+const uploadPage = document.querySelector('#upload-page');
+const resultsPage = document.querySelector('#results-page');
+const newSample = document.querySelector('#new-sample');
+const qualitySummary = document.querySelector('#quality-summary');
+const qualityLabel = document.querySelector('#quality-label');
+const qualityScore = document.querySelector('#quality-score');
+const qualityMessage = document.querySelector('#quality-message');
+const qualityIssues = document.querySelector('#quality-issues');
+let previewUrl = null;
+let hasResults = false;
+let isSubmitting = false;
+
+function showUploadPage() {
+  uploadPage.hidden = false;
+  resultsPage.hidden = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResultsPage() {
+  uploadPage.hidden = true;
+  resultsPage.hidden = false;
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function displayImageUrl(url) {
+  return url.startsWith('data:') ? url : `${url}?t=${Date.now()}`;
+}
+
+function readAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('The selected image could not be read.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function analyseFile(file) {
+  if (window.pywebview?.api) {
+    return window.pywebview.api.predict(await readAsDataUrl(file), file.name);
+  }
+  const payload = new FormData();
+  payload.append('image', file);
+  const response = await fetch('/api/predict', { method: 'POST', body: payload });
+  const data = await response.json();
+  data.ok = response.ok;
+  return data;
+}
+
+function renderQuality(quality) {
+  if (!quality) {
+    qualitySummary.hidden = true;
+    return;
+  }
+  qualitySummary.hidden = false;
+  qualitySummary.dataset.status = quality.status || 'review';
+  qualityLabel.textContent = quality.label || 'Image quality';
+  qualityScore.textContent = `${quality.score ?? 0}/100`;
+  qualityMessage.textContent = quality.message || '';
+  qualityIssues.replaceChildren();
+  for (const issue of quality.issues || []) {
+    const item = document.createElement('li');
+    item.textContent = issue;
+    qualityIssues.append(item);
+  }
+}
+
+function resetUpload() {
+  form.reset();
+  input.value = '';
+  submit.disabled = true;
+  filename.textContent = 'No specimen selected';
+  message.textContent = '';
+  renderQuality(null);
+  zone.classList.remove('has-preview');
+  previewWrap.hidden = true;
+  dropEmpty.hidden = false;
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = null;
+  showUploadPage();
+  history.pushState({ view: 'upload' }, '', '#upload');
+}
+
+function setFile(file) {
+  if (!file || isSubmitting) return;
+  if (!file.type.startsWith('image/')) {
+    message.textContent = 'Choose a PNG or JPEG image.';
+    return;
+  }
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  input.files = transfer.files;
+  filename.textContent = file.name;
+  submit.disabled = false;
+  message.textContent = '';
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
+  preview.src = previewUrl;
+  previewWrap.hidden = false;
+  dropEmpty.hidden = true;
+  zone.classList.add('has-preview');
+}
+
+input.addEventListener('change', () => setFile(input.files[0]));
+['dragenter', 'dragover'].forEach(event => zone.addEventListener(event, value => {
+  value.preventDefault();
+  zone.classList.add('drag');
+}));
+['dragleave', 'drop'].forEach(event => zone.addEventListener(event, value => {
+  value.preventDefault();
+  zone.classList.remove('drag');
+}));
+zone.addEventListener('drop', event => setFile(event.dataTransfer.files[0]));
+newSample.addEventListener('click', resetUpload);
+
+document.querySelector('.brand').addEventListener('click', event => {
+  if (hasResults) {
+    event.preventDefault();
+    resetUpload();
+  }
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Enter' && resultsPage.hidden && input.files.length && !submit.disabled && document.activeElement?.tagName !== 'BUTTON') {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+});
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (isSubmitting) return;
+  if (!input.files.length) {
+    message.textContent = 'Choose a PNG or JPEG smear image first.';
+    return;
+  }
+  message.textContent = '';
+  submit.disabled = true;
+  submit.textContent = 'Analysing specimen…';
+  isSubmitting = true;
+  form.setAttribute('aria-busy', 'true');
+  try {
+    input.disabled = true;
+    const data = await analyseFile(input.files[0]);
+    if (!data.ok) {
+      renderQuality(data.quality);
+      throw new Error(data.error || 'Analysis failed.');
+    }
+    document.querySelector('#detected').textContent = data.cells_detected;
+    document.querySelector('#abnormal').textContent = data.abnormal_cells;
+    renderQuality(data.quality);
+    const counts = { AWBC: 0, ARBC: 0, APLAT: 0, WBC: 0, RBC: 0, PLAT: 0 };
+    for (const detection of data.detections || []) {
+      if (Object.hasOwn(counts, detection.label)) counts[detection.label] += 1;
+    }
+    for (const label of Object.keys(counts)) document.querySelector(`#count-${label.toLowerCase()}`).textContent = counts[label];
+    document.querySelector('#annotated').src = displayImageUrl(data.annotated_url);
+    hasResults = true;
+    history.pushState({ view: 'results' }, '', '#results');
+    showResultsPage();
+  } catch (error) {
+    message.textContent = error.message;
+  } finally {
+    isSubmitting = false;
+    input.disabled = false;
+    form.setAttribute('aria-busy', 'false');
+    submit.disabled = false;
+    submit.textContent = 'Analyse specimen ↗';
+  }
+});
+
+window.addEventListener('popstate', () => {
+  if (location.hash === '#results' && hasResults) showResultsPage();
+  else showUploadPage();
+});

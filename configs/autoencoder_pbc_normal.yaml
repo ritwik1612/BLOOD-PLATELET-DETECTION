@@ -1,0 +1,14 @@
+patch_size: 64
+latent_dim: 128
+epochs: 100
+batch_size: 64
+learning_rate: 0.0001
+weight_decay: 0.00001
+num_workers: 2
+seed: 42
+device: cuda
+early_stopping_patience: 15
+crops_root: dataset/crops_plus_pbc
+checkpoint_path: outputs/weights/autoencoder_pbc_normal_best.pt
+last_checkpoint_path: outputs/weights/autoencoder_pbc_normal_last.pt
+tensorboard_dir: outputs/logs/autoencoder_pbc_normal

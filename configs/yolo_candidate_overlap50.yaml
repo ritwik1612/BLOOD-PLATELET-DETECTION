@@ -1,0 +1,21 @@
+# Inference-only seam-coverage test at the detector's established 640px scale.
+imgsz: 640
+confidence: 0.03
+iou: 0.80
+inference:
+  enabled: true
+  tile_size: 640
+  tile_overlap: 0.50
+  tile_min_dimension: 640
+  max_det: 1000
+  high_resolution_retry:
+    enabled: true
+    image_size: 1024
+    minimum_stained_fraction: 0.12
+    dense_stained_fraction: 0.35
+    maximum_effective_detections: 100
+    minimum_gain_ratio: 0.10
+  low_stain_rescue:
+    enabled: true
+    maximum_field_stained_fraction: 0.05
+    minimum_detection_confidence: 0.50

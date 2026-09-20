@@ -1,0 +1,25 @@
+# Evaluation candidate: retain normal-only calibration, but do not apply the
+# within-image median/MAD guard. This isolates whether the guard is masking
+# true abnormal cells in the labelled infected evaluation set.
+weights:
+  mse: 0.5
+  cosine: 0.3
+  confidence: 0.2
+normalization:
+  method: minmax
+  epsilon: 1.0e-8
+threshold:
+  method: percentile
+  percentile: 97.5
+  std_multiplier: 3.0
+  minimum_detection_confidence_for_abnormal: 0.10
+  use_class_specific_calibration: false
+image_relative_guard:
+  enabled: false
+artifacts:
+  centroids: outputs/weights/centroids.pt
+  calibration: outputs/weights/anomaly_calibration.json
+class_labels:
+  0: WBC
+  1: RBC
+  2: Platelets

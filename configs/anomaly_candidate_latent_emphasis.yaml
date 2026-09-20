@@ -1,0 +1,29 @@
+# Candidate scored without detector uncertainty. In the labelled evaluation,
+# reconstruction and class-referenced cosine distance rank matched abnormal
+# cells substantially better than inverse detector confidence. Thresholds are
+# recalibrated from normal validation cells only.
+weights:
+  mse: 0.35
+  cosine: 0.65
+  confidence: 0.0
+normalization:
+  method: minmax
+  epsilon: 1.0e-8
+threshold:
+  method: percentile
+  percentile: 97.5
+  std_multiplier: 3.0
+  minimum_detection_confidence_for_abnormal: 0.10
+  use_class_specific_calibration: false
+image_relative_guard:
+  enabled: true
+  class_ids: [1]
+  minimum_cells_per_class: 8
+  mad_multiplier: 3.0
+artifacts:
+  centroids: outputs/weights/centroids.pt
+  calibration: outputs/weights/anomaly_calibration_latent_emphasis.json
+class_labels:
+  0: WBC
+  1: RBC
+  2: Platelets

@@ -1,0 +1,15 @@
+# Recall-focused joint normal-only detector. It starts from the original TXL checkpoint.
+model: outputs/weights/yolov8n_txl_pbc_best.pt
+epochs: 100
+batch: 16
+imgsz: 640
+lr0: 0.0005
+optimizer: AdamW
+weight_decay: 0.0005
+workers: 2
+patience: 25
+seed: 42
+device: 0
+project: outputs/yolo
+name: multisource_normal_yolov8n
+best_weights: outputs/weights/yolov8n_multisource_normal_best.pt

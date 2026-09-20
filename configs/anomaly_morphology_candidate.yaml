@@ -1,0 +1,25 @@
+# Candidate only: frozen detector and autoencoder, normal-only transformed references.
+weights:
+  mse: 0.5
+  cosine: 0.3
+  confidence: 0.2
+normalization:
+  method: minmax
+  epsilon: 1.0e-8
+threshold:
+  method: percentile
+  percentile: 97.5
+  std_multiplier: 3.0
+  minimum_detection_confidence_for_abnormal: 0.10
+  use_class_specific_calibration: true
+preprocess:
+  morphology_centering: true
+image_relative_guard:
+  enabled: true
+  class_ids: [1]
+  minimum_cells_per_class: 8
+  mad_multiplier: 3.0
+class_labels:
+  0: WBC
+  1: RBC
+  2: Platelets

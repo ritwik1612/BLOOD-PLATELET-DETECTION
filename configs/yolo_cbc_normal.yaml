@@ -1,0 +1,15 @@
+# Separate detector experiment. This is never loaded by the current web application automatically.
+model: yolov8n.pt
+epochs: 100
+batch: 16
+imgsz: 640
+lr0: 0.001
+optimizer: AdamW
+weight_decay: 0.0005
+workers: 2
+patience: 25
+seed: 42
+device: 0
+project: outputs/yolo
+name: cbc_normal_yolov8n
+best_weights: outputs/weights/yolov8n_cbc_normal_best.pt

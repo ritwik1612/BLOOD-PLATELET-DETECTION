@@ -1,0 +1,32 @@
+model: yolov8n.pt
+epochs: 100
+batch: 16
+imgsz: 640
+lr0: 0.001
+optimizer: AdamW
+weight_decay: 0.0005
+workers: 2
+patience: 25
+seed: 42
+device: 0
+confidence: 0.03
+iou: 0.80
+inference:
+  enabled: true
+  tile_size: 640
+  tile_overlap: 0.35
+  tile_min_dimension: 640
+  max_det: 1000
+  high_resolution_retry:
+    enabled: true
+    image_size: 1024
+    minimum_stained_fraction: 0.12
+    dense_stained_fraction: 0.35
+    maximum_effective_detections: 100
+    minimum_gain_ratio: 0.10
+  low_stain_rescue:
+    enabled: true
+    maximum_field_stained_fraction: 0.05
+    minimum_detection_confidence: 0.50
+project: outputs/yolo
+name: txl_pbc_yolov8n
