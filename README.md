@@ -6,9 +6,19 @@
 
 ## Install the Windows application
 
-Download [`BPD-Setup-2.2.0.exe`](https://github.com/ritwik1612/BLOOD-PLATELET-DETECTION/releases/download/v2.2.0/BPD-Setup-2.2.0.exe) from the [latest release](https://github.com/ritwik1612/BLOOD-PLATELET-DETECTION/releases/latest).
+Download [`BPD-Setup-2.3.0.exe`](https://github.com/ritwik1612/BLOOD-PLATELET-DETECTION/releases/download/v2.3.0/BPD-Setup-2.3.0.exe) from the [latest release](https://github.com/ritwik1612/BLOOD-PLATELET-DETECTION/releases/latest).
 
 The installer lets you choose the installation folder and adds **BPD** to Windows Search and the Start menu. The installed program opens in its own desktop window and performs inference locally. It does not require Python, open a browser, show a terminal, or listen on a localhost port.
+
+## Desktop interface
+
+- Black background with blood-red accents, local fonts, and a compact upload/results workflow.
+- Muted green outlines for cells within the normal reference and red outlines for review candidates.
+- A stock-style morphology-score chart with a dashed threshold line. Each point is one detected cell in detection order, not a time measurement.
+- Click a red cell box to highlight its chart point and display its actual score and decision threshold.
+- Filter the chart by RBC, WBC, or platelets, and switch between the original image and detection overlays.
+
+The chart displays each cell's score divided by its existing decision threshold, making 1.0 the threshold marker. Display controls do not change the detector, model weights, score calculation, thresholds, or final decisions. Fonts are bundled for offline use; their licenses are included under `web_app/static/fonts`.
 
 ## Processing pipeline
 
@@ -71,7 +81,7 @@ py -3.10 -m venv .venv
 .\.venv\Scripts\python.exe desktop_launcher.py
 ```
 
-For a non-desktop development run, start `web_app/app.py` and open `http://127.0.0.1:5050`.
+The approved interactive interface runs through `desktop_launcher.py`. Its JavaScript-to-Python bridge reads the existing pipeline output directly; the legacy Flask API is retained unchanged.
 
 ## Build the Windows package
 
@@ -82,7 +92,7 @@ For a non-desktop development run, start `web_app/app.py` and open `http://127.0
 & "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" installer\bpd.iss
 ```
 
-The installer is written to `installer\release\BPD-Setup-2.2.0.exe`.
+The installer is written to `installer\release\BPD-Setup-2.3.0.exe`.
 
 ## Repository layout
 

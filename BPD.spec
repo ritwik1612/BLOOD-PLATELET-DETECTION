@@ -9,7 +9,9 @@ datas = [
     (str(project_root / "configs"), "configs"),
     (str(project_root / "outputs" / "weights"), "outputs/weights"),
     (str(project_root / "web_app" / "templates"), "web_app/templates"),
-    (str(project_root / "web_app" / "static"), "web_app/static"),
+    (str(project_root / "web_app" / "static" / "app.js"), "web_app/static"),
+    (str(project_root / "web_app" / "static" / "style.css"), "web_app/static"),
+    (str(project_root / "web_app" / "static" / "fonts"), "web_app/static/fonts"),
 ]
 datas += collect_data_files("ultralytics")
 

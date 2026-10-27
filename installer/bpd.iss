@@ -1,5 +1,5 @@
 #define AppName "BPD"
-#define AppVersion "2.2.0"
+#define AppVersion "2.3.0"
 #define AppPublisher "BPD Research"
 #define AppExeName "BPD.exe"
 
@@ -15,11 +15,11 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-UsePreviousAppDir=no
+UsePreviousAppDir=yes
 CloseApplications=yes
 RestartApplications=no
 OutputDir=release
-OutputBaseFilename=BPD-Setup-2.2.0
+OutputBaseFilename=BPD-Setup-2.3.0
 SetupIconFile=bpd.ico
 UninstallDisplayIcon={app}\{#AppExeName}
 WizardStyle=modern
@@ -43,4 +43,4 @@ Name: "{autoprograms}\{#AppName}\Uninstall {#AppName}"; Filename: "{uninstallexe
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#AppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#AppExeName}"; Description: "Launch Blood, in focus."; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppExeName}"; Description: "Launch BPD"; Flags: nowait postinstall skipifsilent
